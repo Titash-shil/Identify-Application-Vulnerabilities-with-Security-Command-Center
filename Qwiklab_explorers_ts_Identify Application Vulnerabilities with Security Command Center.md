@@ -8,14 +8,19 @@ export ZONE=
 ```
 ```
 export REGION="${ZONE%-*}"
+
 gcloud services enable websecurityscanner.googleapis.com
+
 gcloud compute addresses create xss-test-ip-address --region=$REGION
+
 gcloud compute addresses describe xss-test-ip-address \
 --region=$REGION --format="value(address)"
+
 gcloud compute instances create xss-test-vm-instance \
 --address=xss-test-ip-address --no-service-account \
 --no-scopes --machine-type=e2-micro --zone=$ZONE \
 --metadata=startup-script='apt-get update; apt-get install -y python3-flask'
+
 gcloud compute firewall-rules create enable-wss-scan \
 --direction=INGRESS --priority=1000 \
 --network=default --action=ALLOW \
@@ -25,7 +30,7 @@ sleep 20
 
 EXTERNAL_IP=$(gcloud compute instances describe xss-test-vm-instance --zone=$ZONE --format="get(networkInterfaces[0].accessConfigs[0].natIP)")
 
-gcloud alpha web-security-scanner scan-configs create --display-name=lab --starting-urls=http://$EXTERNAL_IP:8080
+gcloud alpha web-security-scanner scan-configs create --display-name=quicklab --starting-urls=http://$EXTERNAL_IP:8080
 
 
 SCAN_CONFIG=$(gcloud alpha web-security-scanner scan-configs list --project=$DEVSHELL_PROJECT_ID --format="value(name)")
@@ -42,7 +47,11 @@ python3 app.py
 
 * ### Follow next steps from video
   
-* #### NOTE : Check All progress Upto *`Task 2`*
+* ## Note :- After getting score on ***TASK 2*** Then only run the below commands.
+  
+* ***Return to your SSH window that's connected to your VM instance.***
+
+* ***Stop the running application by pressing CTRL + C.***
 
 * ### Run again the following Code in `SSH`
 
